@@ -1,0 +1,39 @@
+{
+    "uuid": "eb292645f76c3ebc56719bfe9ad3a0e6",
+    "name": "多通道输入",
+    "icon": "RES_BITMAP_LOGO",
+    "version": "0.0.1",
+    "watchface": "false",
+    "resources": [
+        {
+            "type": "bmp",
+            "name": "RES_BITMAP_LOGO",
+            "file": "logo.bmp"
+        },
+        {
+            "type": "bmp",
+            "name": "RES_BITMAP_MODE1",
+            "file": "mode1.bmp"
+        },
+        {
+            "type": "bmp",
+            "name": "RES_BITMAP_MODE2",
+            "file": "mode2.bmp"
+        },
+        {
+            "type": "bmp",
+            "name": "RES_BITMAP_EXIT",
+            "file": "exit.bmp"
+        },
+        {
+            "type": "bmp",
+            "name": "RES_BITMAP_COPYRIGHT",
+            "file": "copyright.bmp"
+        },
+        {
+            "type": "bmp",
+            "name": "RES_BITMAP_BANNER",
+            "file": "banner.bmp"
+        }
+    ]
+}
