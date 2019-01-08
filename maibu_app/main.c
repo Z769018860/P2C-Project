@@ -39,7 +39,9 @@ enum GameState {
     UCAS_init,
     UCAS_mode1,
     UCAS_mode2,
-    UCAS_exit
+    UCAS_exit,
+    UCAS_choose1,
+    UCAS_choose2
 };
 
 
@@ -59,6 +61,8 @@ static int8_t g_banner_layer_id;
 static int8_t g_mode1_layer_id;
 static int8_t g_mode2_layer_id;
 static int8_t g_exit_layer_id;
+static int8_t g_cmode1_layer_id;
+static int8_t g_cmode2_layer_id;
 static int8_t g_copyright_layer_id;
 
 
@@ -72,7 +76,7 @@ static int8_t choose_mode;
 /* Function */
 void do_mode1(void);
 void do_mode2(void);
-void do_exit(void);
+void do_exit(P_Window pwindow);
 void initVariables(void);
 void upPressed(void *context);
 void backPressed(void *context);
@@ -105,7 +109,8 @@ void initVariables(void)
     g_mode1_layer_id = -1;
     g_mode2_layer_id = -1;
     g_exit_layer_id = -1;
-    g_copyright_layer_id = -1;
+    g_cmode1_layer_id = -1;
+    g_cmode2_layer_id = -1;
 
 
 
@@ -126,11 +131,15 @@ void do_mode1()
     uint8_t *buff;
     enum GameState stat = gameStateGet();
     char *LinkId;
+    char buf[30] = "";
+    int i;
     LinkId="19ad8176"; 
     choose_mode=1;
     //当前为模式1
     //获取三轴数据
-    while (stat == UCAS_mode1)
+    sprintf(buf, "%s", "进入模式1！");
+    //for (i=0;i<10;i++)
+    while(stat == UCAS_choose1)
     {
         maibu_get_accel_data(&x, &y, &z);
         msg[0]=choose_mode;
@@ -140,7 +149,12 @@ void do_mode1()
         size=4*sizeof(uint16_t);
         buff=(uint8_t *)msg;
         //maibu_comm_register_msg_callback(maibu_comm_send_msg);
-        recv_ID=maibu_comm_send_msg(LinkId,buff,size);
+        if (x!=0 || y!=0 || z!=0)
+        {
+            recv_ID=maibu_comm_send_msg(LinkId,buff,size);
+            //break;
+        }    
+        
     }
     return;
 }
@@ -156,11 +170,15 @@ void do_mode2()
     uint8_t *buff;
     enum GameState stat = gameStateGet();
     char *LinkId;
+    char buf[30] = "";
+    int i;
     LinkId="19ad8176"; 
     choose_mode=2;
     //当前为模式1
     //获取三轴数据
-    while (stat == UCAS_mode2)
+    sprintf(buf, "%s", "进入模式2！");
+    //for (i=0;i<10;i++)
+    while (stat == UCAS_choose2)
     {
         maibu_get_accel_data(&x, &y, &z);
         msg[0]=choose_mode;
@@ -170,15 +188,21 @@ void do_mode2()
         size=4*sizeof(uint16_t);
         buff=(uint8_t *)msg;
         //maibu_comm_register_msg_callback(maibu_comm_send_msg);
-        recv_ID=maibu_comm_send_msg(LinkId,buff,size);
+        if (x!=0 || y!=0 || z!=0)
+        {
+            recv_ID=maibu_comm_send_msg(LinkId,buff,size);
+            //break;
+        }
+            
     }
     return;
 }
 
 
-void do_exit()
+void do_exit(P_Window pwindow)
 {
     choose_mode=0;
+    app_window_stack_pop(pwindow);
     return;
 }
 
@@ -218,7 +242,6 @@ void upPressed(void *context)
 
 
     enum GameState stat = gameStateGet();
-    int i;
 
 
 
@@ -280,15 +303,15 @@ void selectPressed(void *context)
 
 
     if (stat == UCAS_mode1) {
-        gameLayerVisible(pwindow, UCAS_mode1);
+        gameLayerVisible(pwindow, UCAS_choose1);
         do_mode1();
     } else if (stat == UCAS_mode2) {
-        gameLayerVisible(pwindow, UCAS_mode2);
+        gameLayerVisible(pwindow, UCAS_choose2);
         do_mode2();
     }else if (stat == UCAS_exit) {
-        gameLayerVisible(pwindow, UCAS_init);
-        gameStateSet(UCAS_init);
-        do_exit();
+        gameLayerVisible(pwindow, UCAS_exit);
+        gameStateSet(UCAS_exit);
+        do_exit(pwindow);
     }
 }
 
@@ -386,28 +409,45 @@ void gameLayer(P_Window pwindow, int8_t *layer_id, P_Layer layer)
 void gameLayerInit(P_Window pwindow)
 {
     P_Layer layer;
+    //char buf[30] = "";
 
-
-
+    //sprintf(buf, "%s", "多通道输入");
     /* Menu */
     //banner
-    layer = bmpOut(14, 20, 40, 100, RES_BITMAP_BANNER);
+    layer = bmpOut(0, 0, 176, 176, RES_BITMAP_BG);
     gameLayer(pwindow, &g_banner_layer_id, layer);
     //mode1
-    layer = bmpOut(40, 50, 9, 35, RES_BITMAP_MODE1);
+    layer = bmpOut(0, 0, 176, 176, RES_BITMAP_BG1);
     gameLayer(pwindow, &g_mode1_layer_id, layer);
     //mode2
-    layer = bmpOut(40, 70, 9, 35, RES_BITMAP_MODE2);
+    layer = bmpOut(0, 0, 176, 176, RES_BITMAP_BG2);
     gameLayer(pwindow, &g_mode2_layer_id, layer);
     //exit
-    layer = bmpOut(45, 90, 9, 20, RES_BITMAP_EXIT);
+    layer = bmpOut(0, 0, 176, 176, RES_BITMAP_BG3);
     gameLayer(pwindow, &g_exit_layer_id, layer);
+    //mode1
+    layer = bmpOut(0, 0, 176, 176, RES_BITMAP_MODE1);
+    gameLayer(pwindow, &g_cmode1_layer_id, layer);
+    //mode2
+    layer = bmpOut(0, 0, 176, 176, RES_BITMAP_MODE2);
+    gameLayer(pwindow, &g_cmode2_layer_id, layer);
 
+    //layer = textOut("多通道输入",50, 80, 40, 100, GAlignCenter, 30);
+    //gameLayer(pwindow, &g_banner_layer_id, layer);
+    //mode1
+    //layer = textOut("MODE 1",50, 80, 20, 80, GAlignCenter,30);
+    //gameLayer(pwindow, &g_mode1_layer_id, layer);
+    //mode2
+    //layer = textOut("MODE 2",50, 110, 20, 80, GAlignCenter,30);
+    //gameLayer(pwindow, &g_mode2_layer_id, layer);
+    //exit
+    //layer = textOut("EXIT",50, 150, 20, 40, GAlignCenter, 30);
+    //gameLayer(pwindow, &g_exit_layer_id, layer);
 
 
     //copyright
-    layer = bmpOut(40, 110, 3, 24, RES_BITMAP_COPYRIGHT);
-    gameLayer(pwindow, &g_copyright_layer_id, layer);    
+   // layer = textOut("Copyright@2019 king",50, 170, 10, 80, GAlignCenter, 30);
+    //gameLayer(pwindow, &g_copyright_layer_id, layer);    
 }
 
 void layerVisible(P_Window pwindow, int8_t id, bool status)
@@ -431,40 +471,69 @@ void gameLayerVisible(P_Window pwindow, enum GameState stat)
     bool mode1;
     bool mode2;
     bool exit;
-    bool copyright;
-
+    bool choose1;
+    bool choose2;
+    //bool copyright;
+        //banner = true;
 
 
     if (stat == UCAS_init) {
         banner = true;
-        mode1 = true;
-        mode2 = true;
-        exit = true;
-        copyright = true;
+        mode1 = false;
+        mode2 = false;
+        exit = false;
+        choose1 = false;
+        choose2 = false;
+        //copyright = true;
 
 
 
     } else if (stat == UCAS_mode1) {
-        banner = true;
-        mode1 = false;
-        mode2 = true;
-        exit = true;
-        copyright = true;
+        banner = false;
+        mode1 = true;
+        mode2 = false;
+        exit = false;
+        choose1 = false;
+        choose2 = false;
+        //copyright = true;
 
 
 
     } else if (stat == UCAS_mode2) {
-        banner = true;
-        mode1 = true;
-        mode2 = false;
-        exit = true;
-        copyright = true;
-    }else if (stat == UCAS_exit) {
-        banner = true;
-        mode1 = true;
+        banner = false;
+        mode1 = false;
         mode2 = true;
         exit = false;
-        copyright = true;
+        choose1 = false;
+        choose2 = false;
+        //copyright = true;
+    }else if (stat == UCAS_exit) {
+        banner = false;
+        mode1 = false;
+        mode2 = false;
+        exit = true;
+        choose1 = false;
+        choose2 = false;
+        //copyright = true;
+    }else if (stat == UCAS_choose1) {
+        banner = false;
+        mode1 = false;
+        mode2 = false;
+        exit = false;
+        choose1 = true;
+        choose2 = false;
+        //copyright = true;
+
+
+
+    } else if (stat == UCAS_choose2) {
+        banner = false;
+        mode1 = false;
+        mode2 = false;
+        exit = false;
+        choose1 = false;
+        choose2 = true;
+        //copyright = true;
     }
 
 
@@ -474,9 +543,12 @@ void gameLayerVisible(P_Window pwindow, enum GameState stat)
     layerVisible(pwindow, g_mode1_layer_id, mode1);
     layerVisible(pwindow, g_mode2_layer_id, mode2);
     layerVisible(pwindow, g_exit_layer_id, exit);
-    layerVisible(pwindow, g_copyright_layer_id, copyright);
+    layerVisible(pwindow, g_cmode1_layer_id, choose1);
+    layerVisible(pwindow, g_cmode2_layer_id, choose2);
+    //layerVisible(pwindow, g_copyright_layer_id, copyright);
+    app_window_update(pwindow);
 
-
+    //layerVisible(pwindow, g_banner_layer_id, banner);
 
 }
 

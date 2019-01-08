@@ -1,39 +1,45 @@
 {
     "uuid": "eb292645f76c3ebc56719bfe9ad3a0e6",
     "name": "多通道输入",
-    "icon": "RES_BITMAP_LOGO",
+    "icon": "RES_BITMAP_ICON",
     "version": "0.0.1",
     "watchface": "false",
+    "device_type": "120",
     "resources": [
         {
             "type": "bmp",
-            "name": "RES_BITMAP_LOGO",
-            "file": "logo.bmp"
+            "name": "RES_BITMAP_ICON",
+            "file": "icon.bmp"
+        },
+        {
+            "type": "bmp",
+            "name": "RES_BITMAP_BG",
+            "file": "bg.bmp"
+        },
+        {
+            "type": "bmp",
+            "name": "RES_BITMAP_BG1",
+            "file": "bg1.bmp"
+        },
+        {
+            "type": "bmp",
+            "name": "RES_BITMAP_BG2",
+            "file": "bg2.bmp"
+        },
+        {
+            "type": "bmp",
+            "name": "RES_BITMAP_BG3",
+            "file": "bg3.bmp"
         },
         {
             "type": "bmp",
             "name": "RES_BITMAP_MODE1",
-            "file": "mode1.bmp"
+            "file": "bgmode1.bmp"
         },
         {
             "type": "bmp",
             "name": "RES_BITMAP_MODE2",
-            "file": "mode2.bmp"
-        },
-        {
-            "type": "bmp",
-            "name": "RES_BITMAP_EXIT",
-            "file": "exit.bmp"
-        },
-        {
-            "type": "bmp",
-            "name": "RES_BITMAP_COPYRIGHT",
-            "file": "copyright.bmp"
-        },
-        {
-            "type": "bmp",
-            "name": "RES_BITMAP_BANNER",
-            "file": "banner.bmp"
+            "file": "bgmode2.bmp"
         }
     ]
 }
