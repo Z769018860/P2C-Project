@@ -152,6 +152,7 @@ void do_mode1()
         if (x!=0 || y!=0 || z!=0)
         {
             recv_ID=maibu_comm_send_msg(LinkId,buff,size);
+            maibu_comm_register_result_callback(recv_ID);
             //break;
         }    
         
@@ -191,6 +192,7 @@ void do_mode2()
         if (x!=0 || y!=0 || z!=0)
         {
             recv_ID=maibu_comm_send_msg(LinkId,buff,size);
+            maibu_comm_register_result_callback(recv_ID);
             //break;
         }
             
